@@ -23,7 +23,7 @@ export const App = () => {
 
   useEffect(() => {
     getJokes().then(jokesArray => {
-      setAllJokes(jokesArray);
+      // setAllJokes(jokesArray);
       const toldJokes = jokesArray.filter(({told}) => told === true);
       const untoldJokes = jokesArray.filter(({told}) => told === false);
       setToldJokes(toldJokes);
@@ -33,42 +33,73 @@ export const App = () => {
 
 
 
-const createToldJokesHTML = () => {
-  let toldJokesHTML = "";
-for (const toldJoke of toldJokes) {
-  toldJokesHTML += `<li className="joke-list-item" 
-                        data-jokeid=${toldJoke.id}>
-                          <p className="joke-list-item-text" 
-                          data-jokeid=${toldJoke.id}>
-                            ${toldJoke.text}
-                          </p>
-                    </li>`
-                        
-}
-  return {__html: toldJokesHTML};
-}
-
-const createUntoldJokesHTML = () => {
-      let untoldJokesHTML = "";
-      for (const untoldJoke of untoldJokes) {
-        untoldJokesHTML += `<li className="joke-list-item" data-jokeid=${untoldJoke.id}><p className="joke-list-item-text" data-jokeid=${untoldJoke.id}>${untoldJoke.text}</p></li>`
-      }
-      return {__html: untoldJokesHTML};
-    }
-
-// const toggleJokeStatus = (jokeId) => {
-//   // Find the joke in the allJokes array
-//   const jokeIndex = allJokes.findIndex(joke => joke.id === jokeId);
-//   if (jokeIndex !== -1) {
-//       // Create a new array with the updated joke
-//       const updatedJokes = allJokes.map(joke =>
-//         joke.id === jokeId ? { ...joke, told: !joke.told } : joke
-//       );
-//       // Update the state
-//       setAllJokes(updatedJokes);
-//       // TODO: Update the database.json file
+// const createToldJokesHTML = () => {
+//   let toldJokesHTML = "";
+//   for (const toldJoke of toldJokes) {
+//       toldJokesHTML += `<li className="joke-list-item" data-jokeid=${toldJoke.id}>
+//                             <p className="joke-list-item-text" data-jokeid=${toldJoke.id}>
+//                               ${toldJoke.text}
+//                             </p>
+//                             <button onClick={() => toggleJokeStatus(${toldJoke.id})}>Toggle</button>
+//                         </li>`;
 //   }
+//   return {__html: toldJokesHTML};
 //   };
+  
+//   const createUntoldJokesHTML = () => {
+//   let untoldJokesHTML = "";
+//   for (const untoldJoke of untoldJokes) {
+//       untoldJokesHTML += `<li className="joke-list-item" data-jokeid=${untoldJoke.id}>
+//                               <p className="joke-list-item-text" data-jokeid=${untoldJoke.id}>
+//                                 ${untoldJoke.text}
+//                               </p>
+//                               <button onClick={() => toggleJokeStatus(${untoldJoke.id})}>Toggle</button>
+//                           </li>`;
+//   }
+//   return {__html: untoldJokesHTML};
+//   };
+
+const ToldJokesList = () => {
+  return (
+     <ul className="told-jokes-list">
+       {toldJokes.map(joke => (
+         <li key={joke.id} className="joke-list-item">
+           <p className="joke-list-item-text">{joke.text}</p>
+           <button onClick={() => toggleJokeStatus(joke.id)}>Toggle</button>
+         </li>
+       ))}
+     </ul>
+  );
+ };
+ 
+ const UntoldJokesList = () => {
+  return (
+     <ul className="untold-jokes-list">
+       {untoldJokes.map(joke => (
+         <li key={joke.id} className="joke-list-item">
+           <p className="joke-list-item-text">{joke.text}</p>
+           <button onClick={() => toggleJokeStatus(joke.id)}>Toggle</button>
+         </li>
+       ))}
+     </ul>
+  );
+ };
+ 
+   
+
+const toggleJokeStatus = (jokeId) => {
+  // Find the joke in the allJokes array
+  const jokeIndex = allJokes.findIndex(joke => joke.id === jokeId);
+  if (jokeIndex !== -1) {
+      // Create a new array with the updated joke
+      const updatedJokes = allJokes.map(joke =>
+        joke.id === jokeId ? { ...joke, told: !joke.told } : joke
+      );
+      // Update the state
+      setAllJokes(updatedJokes);
+      // TODO: Update the database.json file
+  }
+  };
      
 
 return (<div className="app-container">
@@ -100,33 +131,21 @@ return (<div className="app-container">
                   "told": false
                 };
                 setJokeInput("");
-                
-                console.log({allJokes})
-                console.log({allJokes})
-                console.log(jokeSubmission);
                 addJoke(jokeSubmission)}}>Add</button> 
           </div>
           <div className="joke-lists-container">
             <div className="joke-list-container">
-                <h2>Told:
-                  <span className="told-count">
-                    {toldJokes.length}
-                  </span>
-                </h2>
-                <ul className="told-jokes-list" dangerouslySetInnerHTML={createToldJokesHTML()}>
-                    
-                </ul>
+              <h2>Told:
+                <span className="told-count">{toldJokes.length}</span>
+              </h2>
+              <ToldJokesList />
             </div>
             <div className="joke-list-container">
-                <h2>Untold:
-                  <span className="untold-count">
-                  {untoldJokes.length}
-                  </span>
-                </h2>
-                <ul className="untold-jokes-list" dangerouslySetInnerHTML={createUntoldJokesHTML()}>
-                </ul>
+              <h2>Untold:
+                <span className="untold-count">{untoldJokes.length}</span>
+              </h2>
+              <UntoldJokesList />
             </div>
-
           </div>
       </div>)
 }
