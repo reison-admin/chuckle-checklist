@@ -1,9 +1,7 @@
 import "./App.css"
 import stevePic from "./assets/steve.png"
 import { useEffect, useState } from "react"
-import { getJokes, addJoke } from "./services/jokeService.js";
-let toldJokesHTML = "";
-let untoldJokesHTML = "";
+import { getJokes, addJoke, toggleJokeTold } from "./services/jokeService.js";
 export const App = () => {
   const [allJokes, setAllJokes] = useState([]);
   const [inputValue, setJokeInput] = useState("");
@@ -33,33 +31,8 @@ export const App = () => {
 
 
 
-// const createToldJokesHTML = () => {
-//   let toldJokesHTML = "";
-//   for (const toldJoke of toldJokes) {
-//       toldJokesHTML += `<li className="joke-list-item" data-jokeid=${toldJoke.id}>
-//                             <p className="joke-list-item-text" data-jokeid=${toldJoke.id}>
-//                               ${toldJoke.text}
-//                             </p>
-//                             <button onClick={() => toggleJokeStatus(${toldJoke.id})}>Toggle</button>
-//                         </li>`;
-//   }
-//   return {__html: toldJokesHTML};
-//   };
-  
-//   const createUntoldJokesHTML = () => {
-//   let untoldJokesHTML = "";
-//   for (const untoldJoke of untoldJokes) {
-//       untoldJokesHTML += `<li className="joke-list-item" data-jokeid=${untoldJoke.id}>
-//                               <p className="joke-list-item-text" data-jokeid=${untoldJoke.id}>
-//                                 ${untoldJoke.text}
-//                               </p>
-//                               <button onClick={() => toggleJokeStatus(${untoldJoke.id})}>Toggle</button>
-//                           </li>`;
-//   }
-//   return {__html: untoldJokesHTML};
-//   };
-
 const ToldJokesList = () => {
+    //build HTML told joke items with toggle button
   return (
      <ul className="told-jokes-list">
        {toldJokes.map(joke => (
@@ -73,6 +46,7 @@ const ToldJokesList = () => {
  };
  
  const UntoldJokesList = () => {
+  //build HTML untold joke items with toggle button
   return (
      <ul className="untold-jokes-list">
        {untoldJokes.map(joke => (
@@ -95,9 +69,11 @@ const toggleJokeStatus = (jokeId) => {
       const updatedJokes = allJokes.map(joke =>
         joke.id === jokeId ? { ...joke, told: !joke.told } : joke
       );
+      // Update the database.json file
+      toggleJokeTold(updatedJokes[jokeIndex])
+      console.log(updatedJokes[jokeIndex])
       // Update the state
       setAllJokes(updatedJokes);
-      // TODO: Update the database.json file
   }
   };
      
