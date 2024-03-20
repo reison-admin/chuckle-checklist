@@ -1,7 +1,7 @@
 import "./App.css"
 import stevePic from "./assets/steve.png"
 import { useEffect, useState } from "react"
-import { getJokes, addJoke, toggleJokeTold } from "./services/jokeService.js";
+import { getJokes, addJoke, toggleJokeTold, deleteJoke } from "./services/jokeService.js";
 export const App = () => {
   const [allJokes, setAllJokes] = useState([]);
   const [inputValue, setJokeInput] = useState("");
@@ -38,6 +38,7 @@ const ToldJokesList = () => {
        {toldJokes.map(joke => (
          <li key={joke.id} className="joke-list-item">
            <p className="joke-list-item-text">{joke.text}</p>
+           <button onClick={() => deleteJokeHandler(joke.id)}>Delete</button>
            <button onClick={() => toggleJokeStatus(joke.id)}>Toggle</button>
          </li>
        ))}
@@ -52,6 +53,7 @@ const ToldJokesList = () => {
        {untoldJokes.map(joke => (
          <li key={joke.id} className="joke-list-item">
            <p className="joke-list-item-text">{joke.text}</p>
+           <button onClick={() => deleteJokeHandler(joke.id)}>Delete</button>
            <button onClick={() => toggleJokeStatus(joke.id)}>Toggle</button>
          </li>
        ))}
@@ -63,6 +65,7 @@ const ToldJokesList = () => {
 
 const toggleJokeStatus = (jokeId) => {
   // Find the joke in the allJokes array
+  debugger
   const jokeIndex = allJokes.findIndex(joke => joke.id === jokeId);
   if (jokeIndex !== -1) {
       // Create a new array with the updated joke
@@ -76,6 +79,14 @@ const toggleJokeStatus = (jokeId) => {
       setAllJokes(updatedJokes);
   }
   };
+
+  const deleteJokeHandler = (jokeId) => {
+    const jokeIndex = allJokes.findIndex(joke => joke.id === jokeId);
+    deleteJoke(allJokes[jokeIndex])
+    const updatedJokes = allJokes.filter(joke => joke.id !== jokeId);
+    setAllJokes(updatedJokes);
+
+  }
      
 
 return (<div className="app-container">
@@ -99,15 +110,18 @@ return (<div className="app-container">
               }}/>
               <button className="joke-input-submit" onClick={() => {
                 newSubmission = true;
-                let jokesState = ({allJokes})
-                let jokeId = (jokesState.allJokes.length+1)
+                //let jokesState = ({allJokes})
+                //let jokeId = (jokesState.allJokes.length+1)
                 const jokeSubmission = {
-                  "id": jokeId,
+                  "id": allJokes.length + 1,
                   "text": inputValue,
                   "told": false
                 };
                 setJokeInput("");
-                addJoke(jokeSubmission)}}>Add</button> 
+                addJoke(jokeSubmission);
+                // jokesState.allJokes.push(jokeSubmission);
+                
+                setAllJokes(allJokes => [...allJokes, jokeSubmission])}}>Add</button> 
           </div>
           <div className="joke-lists-container">
             <div className="joke-list-container">

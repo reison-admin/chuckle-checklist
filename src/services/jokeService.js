@@ -22,3 +22,14 @@ export const toggleJokeTold = async (joke) => {
     }
     const toggleResponse = await fetch(`http://localhost:8088/jokes/${joke.id}`, postOptions)
 }
+
+export const deleteJoke = async (joke) => {
+    const postOptions = {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(joke)
+    }
+    const toggleResponse = await fetch(`http://localhost:8088/jokes/${joke.id}`, postOptions)
+}
